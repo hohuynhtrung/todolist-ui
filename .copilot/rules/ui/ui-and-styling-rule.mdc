@@ -1,0 +1,12 @@
+---
+alwaysApply: true
+---
+description: Guidelines for UI and styling, focusing on Tailwind CSS and Shaden UI best practices.
+globs: **/*.{ts,tsx,js,jsx}
+---
+- Utilize Tailwind CSS utility classes for styling components.
+- Follow Shadcn UI component guidelines and best practices.
+- Ensure UI is responsive and accessible.
+- Do not nest `Button` inside menu/sheet/dialog triggers that already render a button; style the trigger with `buttonVariants` + `className` instead (see `dom-state-shadcn-pitfalls.mdc`).
+- Post feed cards (`PostCard`): text-only layout (no inline cover thumbnail); single column, tight vertical rhythm (`gap-3`, clear meta → title → excerpt → stats).
+- Secondary actions on list rows: prefer a **dropdown (e.g. three-dot menu)** over many inline buttons; destructive confirm → **Dialog** when the app already uses shadcn/Base UI dialogs.

@@ -1,0 +1,24 @@
+---
+alwaysApply: true
+description: Tránh lỗi DOM (button/li lồng nhau), Base UI Menu context, và Zustand snapshot không ổn định.
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+## Nested buttons — không được `<button>` trong `<button>`
+- Các **trigger** của Radix / Base UI / shadcn (`DropdownMenuTrigger`, `SheetTrigger`, `DialogTrigger`, `PopoverTrigger`, `CollapsibleTrigger`, …) mặc định render **một phần tử gốc có thể tương tác** (thường là `<button>`).
+- **Không** bọc trigger đó trong `<Button>` của shadcn — sẽ gây cảnh báo DOM và lỗi a11y.
+- **Nên** style giống nút bằng `className={cn(buttonVariants({ variant, size }), '...')}` **trực tiếp trên trigger** (hoặc dùng `asChild` + một phần tử con duy nhất không phải `Button` bọc thêm nút).
+
+## Base UI Menu — `GroupLabel` phải nằm trong `Group`
+- `DropdownMenuLabel` (và các phần tử map tới `Menu.GroupLabel`) **phải** nằm trong **`DropdownMenuGroup`** (`<Menu.Group>`).
+- Nếu gặp lỗi kiểu `MenuGroupRootContext is missing`, bọc khối label / nhóm liên quan bằng `<DropdownMenuGroup>` trước khi tách `Separator` hoặc các `Item`.
+
+## Zustand — selector phải ổn định (tránh vòng lặp `useSyncExternalStore`)
+- Selector `useStore((s) => …)` được gọi lại khi subscribe; nếu **mỗi lần trả về reference mới** (ví dụ `Object.values(s.record)`, `[...s.arr]`, object literal mới mỗi lần) thì React có thể báo **`getSnapshot should be cached`** và lỗi **maximum update depth**.
+- **Nên:** chọn slice **ổn định** theo reference từ store, ví dụ `s.tags` / `s.topics` (object/record), rồi `useMemo(() => Object.values(record), [record])` khi cần mảng; hoặc dùng **`useShallow`** từ `zustand/react/shallow` khi chọn nhiều field / object cần so sánh nông.
+- **Tránh:** `useStore((s) => Object.values(s.x))` trực tiếp làm selector duy nhất nếu `Object.values` tạo mảng mới mỗi lần đọc.
+
+## Danh sách / thread comment — không được `<li>` trong `<li>` (cùng cấp không qua `<ul>`)
+- Một **node** trong cây danh sách: `<li>` bọc **nội dung** (nên dùng `<article>` hoặc `<div>` cho card) và **một `<ul>` con** cho các reply, không đặt thêm `<li>` do component con render **bên trong** `<li>` cha mà không có cấu trúc `ul > li` đúng.
+- **Không** để component card vừa là `<li>` vừa bị bọc bởi `<li>` khác ở parent — card nên là **`article`/`div`**, chỉ **một** `<li>` bọc mỗi mục trong cây.
+- Với reply lồng nhau: thêm **khoảng cách** (`gap` trên `ul`/`flex`, `mt-*` trên `ul` con) và có thể **`pl-*` + `border-l`** trên nhánh con để tách trực quan.

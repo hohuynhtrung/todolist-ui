@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+description: Copy tiếng Việt cho người dùng cuối — toast, dialog, empty state, lỗi.
+globs: **/*.{ts,tsx,js,jsx}
+---
+- User-visible strings: **Vietnamese**, short, consistent tone for success vs error.
+- Avoid implementation jargon in UI copy (API, máy chủ, soft delete, slug) unless the user truly needs it; prefer “đường dẫn” or neutral wording when explaining URLs.
+- Errors should suggest a **next step** (thử lại, kiểm tra kết nối, đăng nhập lại) rather than raw codes or English developer messages.
+- Centralize API error → user message mapping in a **single helper** where practical (see admin `friendlyApiMessage` pattern).
+- `aria-label` and dialog titles must stay clear and match the action (e.g. delete confirmation describes outcome for the user).

@@ -1,0 +1,12 @@
+---
+alwaysApply: true
+---
+description: Rules to optimize performance of React and TypeScript components.
+globs: **/*.{ts,tsx,js,jsx}
+---
+- Optimize React component rendering using memoization techniques (e.g., React.memo).
+- Avoid unnecessary re-renders.
+- Lazy load components and images when possible.
+- Heavy editors (e.g. TipTap / rich markdown) should load via `React.lazy` + `Suspense` so initial routes stay small.
+- Use efficient data structures and algorithms.
+- Zustand selectors must return stable references when store data is unchanged (avoid `Object.values`/new arrays in the selector body); see `dom-state-shadcn-pitfalls.mdc`.
